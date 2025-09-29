@@ -1,2 +1,8 @@
 langchain
 langchain-community
+langgraph
+python-dotenv
+langchain-ollama
+# multi-model
+pillow
+ipython
