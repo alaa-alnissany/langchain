@@ -1,9 +1,8 @@
-# import getpass
 from itertools import chain
-# import os
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama.llms import OllamaLLM
-# from langchain.chat_models import init_chat_model
+from langchain_core.messages import SystemMessage, HumanMessage
+
 
 
 try:
@@ -12,17 +11,43 @@ try:
 except ImportError:
     pass
 
-# if not os.environ.get("OPENAI_API_KEY"):
-#     os.environ["OPENAI_API_KEY"] = getpass.getpass("Enter API Key: ")
-# model = init_chat_model("gpt-4o-mini", model_provider="openai")
-# model.invoke("hello, world!")
 
-template= """SYSTEM MESSAGE : {sys_msg}
-Query: {q}"""
 
-prompt= ChatPromptTemplate.from_template(template)
+# ------------------Using Template--------------------------
+# template= """translate the following from english into {lang}:
+#             {q}"""
+# prompt= ChatPromptTemplate.from_template(template)
 
+
+# ------------------Using message---------------------------
+message= "translate the following from english into {lang}"
+# prompt definition in langchain site, we notice that .to_message() func is useless 
+# prompt = ChatPromptTemplate.from_messages([
+#      ("system", message),
+#      ("user","{q}"),
+#      ]).invoke({"q":"The part of speech used to indicate nouns and to specify their application.","lang":"Arabic"}).to_messages()
+
+prompt = ChatPromptTemplate.from_messages([
+     ("system", message),
+     ("user","{q}"),
+     ])
+
+print(prompt)
+# Define the model
 model = OllamaLLM(model="qwen3")
-
 chain = prompt | model
-print(chain.invoke({"q":"who is bashar alasaad?","sys_msg":"translate this into arabic"}))
+print(chain.invoke({"q":"The part of speech used to indicate nouns and to specify their application.","lang":"Arabic"}))
+
+
+
+
+# ----------Using SystemMessage & HumanMessage--------------
+# this method take a static string inputs without being able to invoke any variable into the prompt
+prompt = [
+    SystemMessage(content= "translate the following from english into Arabic"),
+    HumanMessage(content= "how are you?")
+]
+
+print(prompt)
+model = OllamaLLM(model="qwen3")
+print(model.invoke(prompt))
