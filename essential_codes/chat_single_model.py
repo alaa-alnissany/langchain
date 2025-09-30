@@ -14,13 +14,15 @@ except ImportError:
 
 
 # ------------------Using Template--------------------------
-# template= """translate the following from english into {lang}:
-#             {q}"""
-# prompt= ChatPromptTemplate.from_template(template)
+# This way can output just HumanMessage
+template= """translate the following from english into {lang}:
+            {q}"""
+prompt= ChatPromptTemplate.from_template(template)
 
 
 # ------------------Using message---------------------------
-message= "translate the following from english into {lang}"
+# This way can output both SystemMessage & HumanMessage
+sys_message= "translate the following from english into {lang}"
 # prompt definition in langchain site, we notice that .to_message() func is useless 
 # prompt = ChatPromptTemplate.from_messages([
 #      ("system", message),
@@ -28,7 +30,7 @@ message= "translate the following from english into {lang}"
 #      ]).invoke({"q":"The part of speech used to indicate nouns and to specify their application.","lang":"Arabic"}).to_messages()
 
 prompt = ChatPromptTemplate.from_messages([
-     ("system", message),
+     ("system", sys_message), # roles: system, user, ai, assistant, tool
      ("user","{q}"),
      ])
 
@@ -42,7 +44,8 @@ print(chain.invoke({"q":"The part of speech used to indicate nouns and to specif
 
 
 # ----------Using SystemMessage & HumanMessage--------------
-# this method take a static string inputs without being able to invoke any variable into the prompt
+# This method take a static string inputs without being able to invoke any variable into the prompt
+# from langchain_core.schema import SystemMessage, HumanMessage # this is the old way.
 prompt = [
     SystemMessage(content= "translate the following from english into Arabic"),
     HumanMessage(content= "how are you?")
