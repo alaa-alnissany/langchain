@@ -9,3 +9,4 @@ pillow
 ipython
 # semantic-search
 pypdf
+docling
